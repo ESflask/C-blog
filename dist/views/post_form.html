@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>記事作成 — C-blog</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=JetBrains+Mono:wght@400;500;600;700&family=Noto+Sans+JP:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../static/css/style.css" />
+</head>
+<body data-theme="minimal" data-mode="light">
+<!-- ▼▼ layout.csp ：ヘッダー（全ページ共通） ▼▼ -->
+  <header class="header">
+    <div class="header__inner">
+      <a class="brand" href="index.html" aria-label="C-blog ホーム">
+        <span class="brand__mark">C</span>
+        <span class="brand__text">
+          <span class="brand__name">C-blog</span>
+          <span class="brand__tag">C++ · Drogon · SQLite</span>
+        </span>
+      </a>
+      <div class="header-search">
+        <span class="header-search__icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></span>
+        <input class="header-search__input" type="search" placeholder="記事をキーワードで検索" />
+      </div>
+      <nav class="nav">
+        <a class="nav-btn" href="index.html">記事一覧</a>
+        <a class="nav-btn active" href="login.html">管理</a>
+        <button class="mode-toggle" data-mode-toggle type="button" aria-label="ライト/ダーク切替"></button>
+      </nav>
+    </div>
+    <div class="gold-rule"></div>
+  </header>
+  <!-- ▲▲ ヘッダーここまで ▲▲ -->
+
+  <!-- ▼▼ 記事作成：このページの content（= 個別 .csp） ▼▼ -->
+  <main class="page">
+    <div class="container">
+      <div class="article-form-wrap">
+        <a class="back-btn" style="margin-bottom:16px" href="admin.html">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M19 12H5m0 0 7 7m-7-7 7-7"/></svg>
+          ダッシュボードに戻る
+        </a>
+        <h1 class="form-hd">新規記事作成</h1>
+        <p class="form-sub">Markdown で本文を書き、公開設定を選びます</p>
+        <form method="post" action="/admin/posts">
+          <div class="field-row"><label class="field-label">タイトル</label><input class="field-input" name="title" type="text" placeholder="記事タイトルを入力…" /></div>
+          <div class="field-row" style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+            <div><label class="field-label">カテゴリ</label><select class="field-input" name="category"><option>C++</option><option>Drogon</option><option>SQLite</option><option>CMake</option><option>アーキテクチャ</option><option>パフォーマンス</option><option>テスト</option></select></div>
+            <div><label class="field-label">スラッグ</label><input class="field-input" name="slug" type="text" placeholder="async-handler-coroutine" style="font-family:var(--font-mono);font-size:13.5px" /></div>
+          </div>
+          <div class="field-row">
+            <label class="field-label">本文（Markdown）</label>
+            <textarea class="field-input field-textarea" name="body" placeholder="## 見出し&#10;&#10;本文をMarkdownで入力…"></textarea>
+            <p class="field-hint">保存時に utils/Markdown により HTML へ変換されます</p>
+          </div>
+          <div class="field-row">
+            <label class="field-label">公開設定</label>
+            <div class="field-toggle-row">
+              <div class="toggle" data-toggle-pub data-on="1">
+                <div class="toggle-track" style="background:var(--c-blue)"></div>
+                <div class="toggle-thumb" style="transform:translateX(16px)"></div>
+              </div>
+              <span class="toggle-lbl">公開</span>
+            </div>
+          </div>
+          <div class="form-actions">
+            <button class="btn-primary" type="submit" style="width:auto;padding:12px 36px">保存</button>
+            <a class="btn-secondary" href="admin.html">キャンセル</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </main>
+  <!-- ▲▲ content ここまで ▲▲ -->
+
+  <!-- ▼▼ layout.csp ：フッター（全ページ共通） ▼▼ -->
+  <footer class="site-footer">
+    <div class="site-footer__inner">
+      <div class="footer-brand">
+        <span class="footer-mark">C</span>
+        <span class="footer-copy">© 2026 C-blog</span>
+      </div>
+      <span class="footer-tech">Powered by <b>Drogon</b> (C++17) · <b>SQLite</b></span>
+    </div>
+  </footer>
+  <!-- ▲▲ フッターここまで ▲▲ -->
+  <script src="../static/js/app.js"></script>
+</body>
+</html>

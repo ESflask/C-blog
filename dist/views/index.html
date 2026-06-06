@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>記事一覧 — C-blog</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=JetBrains+Mono:wght@400;500;600;700&family=Noto+Sans+JP:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../static/css/style.css" />
+</head>
+<body data-theme="minimal" data-mode="light">
+<!-- ▼▼ layout.csp ：ヘッダー（全ページ共通） ▼▼ -->
+  <header class="header">
+    <div class="header__inner">
+      <a class="brand" href="index.html" aria-label="C-blog ホーム">
+        <span class="brand__mark">C</span>
+        <span class="brand__text">
+          <span class="brand__name">C-blog</span>
+          <span class="brand__tag">C++ · Drogon · SQLite</span>
+        </span>
+      </a>
+      <div class="header-search">
+        <span class="header-search__icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></span>
+        <input class="header-search__input" type="search" placeholder="記事をキーワードで検索" />
+      </div>
+      <nav class="nav">
+        <a class="nav-btn active" href="index.html">記事一覧</a>
+        <a class="nav-btn" href="login.html">管理</a>
+        <button class="mode-toggle" data-mode-toggle type="button" aria-label="ライト/ダーク切替"></button>
+      </nav>
+    </div>
+    <div class="gold-rule"></div>
+  </header>
+  <!-- ▲▲ ヘッダーここまで ▲▲ -->
+
+  <!-- ▼▼ 記事一覧：このページの content（= 個別 .csp） ▼▼ -->
+  <main class="page">
+    <div class="container">
+      <div class="page-section">
+        <div class="chips">
+            <button class="chip active" type="button">すべて</button>
+            <button class="chip" type="button">C++</button>
+            <button class="chip" type="button">Drogon</button>
+            <button class="chip" type="button">SQLite</button>
+            <button class="chip" type="button">CMake</button>
+            <button class="chip" type="button">アーキテクチャ</button>
+            <button class="chip" type="button">パフォーマンス</button>
+            <button class="chip" type="button">テスト</button>
+        </div>
+        <div class="section-hd"><h1>記事一覧</h1><span class="section-count">5件</span></div>
+        <div class="articles-grid">
+        <a class="article-card" href="post_detail.html">
+          <div class="card-top"><span class="card-cat">Drogon</span><span class="card-tag-lang">C++</span></div>
+          <h2 class="card-title">Drogon の非同期ハンドラを coroutine で書く</h2>
+          <p class="card-excerpt">コールバック地獄を避けて Task&lt;&gt; ベースで HTTP ハンドラを記述する方法。co_await で DB アクセスを直列に書きつつ非同期を保つ実装パターンを解説します。</p>
+          <div class="card-meta"><span>2026年6月2日</span><span class="meta-sep">—</span><span>読了 8分</span></div>
+        </a>
+        <a class="article-card" href="post_detail.html">
+          <div class="card-top"><span class="card-cat">Drogon</span><span class="card-tag-lang">CSP</span></div>
+          <h2 class="card-title">CSP テンプレートでサーバーサイドレンダリング</h2>
+          <p class="card-excerpt">Drogon の .csp テンプレートで HTML を生成する仕組みと、レイアウト継承・部分ビュー・エスケープの実務的な使い方をまとめます。</p>
+          <div class="card-meta"><span>2026年5月26日</span><span class="meta-sep">—</span><span>読了 6分</span></div>
+        </a>
+        <a class="article-card" href="post_detail.html">
+          <div class="card-top"><span class="card-cat">SQLite</span><span class="card-tag-lang">SQL</span></div>
+          <h2 class="card-title">SQLite と Drogon ORM でモデルを自動生成する</h2>
+          <p class="card-excerpt">migrations の DDL から drogon_ctl でモデルを生成し、型安全に CRUD を書く流れ。マイグレーション運用のコツも添えて解説します。</p>
+          <div class="card-meta"><span>2026年5月19日</span><span class="meta-sep">—</span><span>読了 7分</span></div>
+        </a>
+        <a class="article-card" href="post_detail.html">
+          <div class="card-top"><span class="card-cat">アーキテクチャ</span><span class="card-tag-lang">C++</span></div>
+          <h2 class="card-title">Controller / Service / Model のレイヤ分離</h2>
+          <p class="card-excerpt">ビジネスロジックを Service に寄せ、Controller を入出力に専念させる設計。テスト容易性と変更耐性が両立する理由を実例で示します。</p>
+          <div class="card-meta"><span>2026年5月5日</span><span class="meta-sep">—</span><span>読了 5分</span></div>
+        </a>
+        <a class="article-card" href="post_detail.html">
+          <div class="card-top"><span class="card-cat">パフォーマンス</span><span class="card-tag-lang">C++</span></div>
+          <h2 class="card-title">std::string_view で無駄なコピーを減らす</h2>
+          <p class="card-excerpt">所有権を持たないビューで部分文字列を扱い、ヒープ確保を避ける。落とし穴（ダングリング）と安全な使いどころを整理します。</p>
+          <div class="card-meta"><span>2026年4月28日</span><span class="meta-sep">—</span><span>読了 6分</span></div>
+        </a>
+        </div>
+      </div>
+    </div>
+  </main>
+  <!-- ▲▲ content ここまで ▲▲ -->
+
+  <!-- ▼▼ layout.csp ：フッター（全ページ共通） ▼▼ -->
+  <footer class="site-footer">
+    <div class="site-footer__inner">
+      <div class="footer-brand">
+        <span class="footer-mark">C</span>
+        <span class="footer-copy">© 2026 C-blog</span>
+      </div>
+      <span class="footer-tech">Powered by <b>Drogon</b> (C++17) · <b>SQLite</b></span>
+    </div>
+  </footer>
+  <!-- ▲▲ フッターここまで ▲▲ -->
+  <script src="../static/js/app.js"></script>
+</body>
+</html>

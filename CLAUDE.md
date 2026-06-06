@@ -126,6 +126,10 @@ brew install drogon sqlite
 
 開発サーバはデフォルトで http://localhost:8080 で起動する（`config.json` で変更）。
 
+## 作業の進め方
+
+ただし3体のモデルに分割し、それぞれにタスクを割り当てて。終わり次第一つの知能に統合して。
+
 ## 規約・方針
 
 - **C++17** を使用。例外より Drogon のコールバック/`Task<>` を優先。
@@ -135,12 +139,39 @@ brew install drogon sqlite
 - パスワードは平文保存せず、ハッシュ化（bcrypt 等）して `password_hash` に格納する。
 - `views/*.csp` にビジネスロジックを書かない。
 
-## まだ未実装（このリポジトリは初期スキャフォールド段階）
+## ハマりどころ / 運用メモ
 
-現時点ではディレクトリ構成と設定ファイルの骨格のみ。以下は今後の実装対象：
-- [ ] `migrations/001_init.sql` の DDL 確定
-- [ ] ORM モデル生成
-- [ ] 各 Controller / Service の実装
-- [ ] CSP テンプレートの実装
-- [ ] 認証（ログイン/セッション or JWT）
+実装中に踏んだ問題と対処（再発防止）:
+
+- **ビュークラス名 `index` が POSIX `index()`(`<strings.h>`) と衝突**してビルド失敗
+  （`DrTemplate<index>` が型ではなく関数と解決される）。対処: `CMakeLists.txt` の
+  `drogon_create_views(... TRUE)` で path-to-namespace を有効にし、`views/` から
+  名前空間 `views` を導出（クラスは `views::index`）。コントローラ側は
+  `newHttpViewResponse("views::index", data)` と名前空間付きで参照する。
+- **コントローラ vs 静的ファイルの優先順位**: 登録済みコントローラは静的ファイル
+  （implicit index.html を含む）より優先される。よって `/` は BlogController が処理し、
+  静的トップは `/index.html` で別途アクセス可能。`setImplicitPageEnable(false)` は不要。
+- **古い `blog_app` プロセスが 8080 を掴んだまま**だと、再ビルドした新バイナリは
+  バインド失敗で即終了し、リクエストは古いプロセスに当たって「ルート未登録のように
+  見える 404」が出る。再起動前に必ず終了させること:
+  `pkill -f 'build/blog_app'`（または `lsof -i :8080`）。
+
+## 進捗
+
+実装済み:
+- [x] `migrations/001_init.sql` の DDL（users/posts/comments/tags/post_tags）
+- [x] `services/PostService.{h,cc}`（公開記事の取得。生SQL/execSqlSync、抜粋付き）
+- [x] `controllers/BlogController.{h,cc}` + `views/index.csp`（`GET /` 記事一覧）
+- [x] **UI 移植**: C-blog の **Minimal** デザイン（`static/css/style.css` + `static/js/app.js`）
+      を記事一覧に適用。`app.js` がクライアント側でダーク切替・コードハイライト・読了
+      バーを担当（サーバは素の HTML を返すだけ）。デザイン原本は `dist/`（参考）。
+
+今後の実装対象（`dist/views/*.html` に各ページの content 雛形あり）:
+- [ ] 記事詳細 `GET /posts/{slug}`（PostController + post_detail.csp、`dist/views/post_detail.html`）
+- [ ] ログイン `login.csp`（`dist/views/login.html`）・管理 `admin.csp`（`admin.html`）・
+      フォーム `post_form.csp`（`post_form.html`）の content 移植＋コントローラ実装
+- [ ] `{% %}` 出力の HTML エスケープ（title/excerpt は現状未エスケープ。XSS 対策）
+- [ ] ORM モデル生成（drogon_ctl。現状 PostService は生SQL）
+- [ ] 記事の作成/編集/削除、コメント投稿
+- [ ] 認証（ログイン/セッション or JWT）+ LoginFilter
 - [ ] テスト整備

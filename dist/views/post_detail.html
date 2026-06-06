@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>記事詳細 — C-blog</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=JetBrains+Mono:wght@400;500;600;700&family=Noto+Sans+JP:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../static/css/style.css" />
+</head>
+<body data-theme="minimal" data-mode="light">
+<!-- ▼▼ layout.csp ：ヘッダー（全ページ共通） ▼▼ -->
+  <header class="header">
+    <div class="header__inner">
+      <a class="brand" href="index.html" aria-label="C-blog ホーム">
+        <span class="brand__mark">C</span>
+        <span class="brand__text">
+          <span class="brand__name">C-blog</span>
+          <span class="brand__tag">C++ · Drogon · SQLite</span>
+        </span>
+      </a>
+      <div class="header-search">
+        <span class="header-search__icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></span>
+        <input class="header-search__input" type="search" placeholder="記事をキーワードで検索" />
+      </div>
+      <nav class="nav">
+        <a class="nav-btn active" href="index.html">記事一覧</a>
+        <a class="nav-btn" href="login.html">管理</a>
+        <button class="mode-toggle" data-mode-toggle type="button" aria-label="ライト/ダーク切替"></button>
+      </nav>
+    </div>
+    <div class="gold-rule"></div>
+  </header>
+  <!-- ▲▲ ヘッダーここまで ▲▲ -->
+
+  <!-- ▼▼ 記事詳細：このページの content（= 個別 .csp） ▼▼ -->
+  <main class="page">
+    <div class="progress-bar" style="width:0%"></div>
+    <div class="container">
+      <a class="back-btn" href="index.html">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M19 12H5m0 0 7 7m-7-7 7-7"/></svg>
+        記事一覧に戻る
+      </a>
+      <div class="layout-with-aside">
+        <aside class="article-aside">
+          <div class="article-aside__title">カテゴリ</div>
+          <ul>
+            <li><a class="aside-link" href="index.html">すべての記事</a></li>
+            <li><a class="aside-link" href="index.html">C++</a></li>
+            <li><a class="aside-link active" href="index.html">Drogon</a></li>
+            <li><a class="aside-link" href="index.html">SQLite</a></li>
+            <li><a class="aside-link" href="index.html">CMake</a></li>
+            <li><a class="aside-link" href="index.html">アーキテクチャ</a></li>
+            <li><a class="aside-link" href="index.html">パフォーマンス</a></li>
+            <li><a class="aside-link" href="index.html">テスト</a></li>
+          </ul>
+        </aside>
+        <div>
+          <div class="article-hd">
+            <div class="article-cat">Drogon</div>
+            <h1 class="article-title">Drogon の非同期ハンドラを coroutine で書く</h1>
+            <div class="article-meta">
+              <span>2026年6月2日</span><span style="color:var(--c-gold)">—</span><span>読了時間 8分</span>
+              <span class="article-tags"><span class="article-tag-lang">C++</span></span>
+            </div>
+          </div>
+          <div class="article-body">
+            <p>Drogon はコールバックベースの非同期 I/O を基本としますが、C++20 の coroutine を使うと <code>co_await</code> で DB アクセスや HTTP 呼び出しを<strong>直列に書きながら非同期を保つ</strong>ことができます。</p>
+            <p>まず、コントローラのハンドラを <code>Task&lt;HttpResponsePtr&gt;</code> として宣言します。</p>
+<pre><code data-file="BlogController.cc" data-lang="C++">Task&lt;HttpResponsePtr&gt; BlogController::show(HttpRequestPtr req,
+                                          std::string slug) {
+  auto db = drogon::app().getDbClient();
+  Mapper&lt;Posts&gt; mapper(db);
+
+  // co_await で結果が返るまで中断、スレッドはブロックしない
+  auto post = co_await mapper.findOne(
+      Criteria(Posts::Cols::_slug, slug));
+
+  auto resp = HttpResponse::newHttpViewResponse(
+      "post_detail", toJson(post));
+  co_return resp;
+}</code></pre>
+            <h2>例外とエラーハンドリング</h2>
+            <p><code>co_await</code> が投げる例外は通常の try / catch で捕捉できます。レコードが無い場合は 404 を返しましょう。</p>
+            <blockquote>非同期の「速さ」を保ったまま、同期コードの「読みやすさ」を得られるのが coroutine の本質的な利点です。</blockquote>
+          </div>
+
+          <!-- ▼ コメント（comments テーブル） ▼ -->
+          <section class="comments">
+            <h2 class="comments__title">コメント <span class="comments__count">2</span></h2>
+            <ul class="comment-list">
+              <li class="comment">
+                <div class="comment__head"><span class="comment__author">guest_taro</span><span class="comment__date">2026年6月3日</span></div>
+                <p class="comment__body">coroutine 版、エラー処理がすっきりして良いですね。Service 層への切り出しも知りたいです。</p>
+              </li>
+              <li class="comment">
+                <div class="comment__head"><span class="comment__author">k_yamada</span><span class="comment__date">2026年6月4日</span></div>
+                <p class="comment__body">findOne が無いときの UnexpectedRows、ハマりがちなので助かりました。</p>
+              </li>
+            </ul>
+            <form class="comment-form" method="post" action="#">
+              <div class="field-row"><label class="field-label">お名前</label><input class="field-input" name="author_name" type="text" placeholder="ニックネーム" /></div>
+              <div class="field-row"><label class="field-label">コメント</label><textarea class="field-input comment-textarea" name="body" placeholder="コメントを入力…"></textarea></div>
+              <button class="btn-primary" type="submit" style="width:auto;padding:11px 30px">投稿する</button>
+            </form>
+          </section>
+        </div>
+      </div>
+    </div>
+  </main>
+  <!-- ▲▲ content ここまで ▲▲ -->
+
+  <!-- ▼▼ layout.csp ：フッター（全ページ共通） ▼▼ -->
+  <footer class="site-footer">
+    <div class="site-footer__inner">
+      <div class="footer-brand">
+        <span class="footer-mark">C</span>
+        <span class="footer-copy">© 2026 C-blog</span>
+      </div>
+      <span class="footer-tech">Powered by <b>Drogon</b> (C++17) · <b>SQLite</b></span>
+    </div>
+  </footer>
+  <!-- ▲▲ フッターここまで ▲▲ -->
+  <script src="../static/js/app.js"></script>
+</body>
+</html>
