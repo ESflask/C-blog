@@ -1,0 +1,22 @@
+# ビルド成果物
+/build/
+*.o
+*.obj
+
+# SQLite DB
+*.db
+*.db-journal
+*.sqlite
+
+# ログ / アップロード
+/logs/
+/uploads/
+
+# 機密
+.env
+
+# OS / エディタ
+.DS_Store
+*.swp
+.vscode/
+.idea/
