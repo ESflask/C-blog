@@ -1,7 +1,9 @@
 # My C++ Blog
 
-<img width="2306" height="1534" alt="E054F6B2-045B-4069-B61A-52EF383F3160_1_201_a" src="https://github.com/user-attachments/assets/cc12d4dd-f395-4c32-81f0-6d070df805be" />
-<img width="2464" height="1559" alt="294FDF00-9D59-4AFF-B5C2-6BD3F9508375_1_201_a" src="https://github.com/user-attachments/assets/49de595f-eba1-4231-873e-1df72864b0bc" />
+<p align="center">
+  <img width="48%" alt="記事一覧" src="https://github.com/user-attachments/assets/cc12d4dd-f395-4c32-81f0-6d070df805be" />
+  <img width="48%" alt="記事詳細" src="https://github.com/user-attachments/assets/49de595f-eba1-4231-873e-1df72864b0bc" />
+</p>
 
 このプロジェクトは、**C++ (フレームワークは Drogon) + SQLite を用いた** サーバーサイドレンダリング型のブログサイトです。
 記事の一覧・詳細表示、管理画面からの記事 CRUD（作成 / 編集 / 削除 / 公開トグル）、
