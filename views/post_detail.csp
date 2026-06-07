@@ -1,0 +1,124 @@
+<%inc
+#include "services/PostService.h"
+%>
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>[[ title ]]</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=JetBrains+Mono:wght@400;500;600;700&family=Noto+Sans+JP:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body data-theme="minimal" data-mode="light">
+  <!-- ── ヘッダー（全ページ共通） ── -->
+  <header class="header">
+    <div class="header__inner">
+      <a class="brand" href="/" aria-label="C-blog ホーム">
+        <span class="brand__mark">C</span>
+        <span class="brand__text">
+          <span class="brand__name">C-blog</span>
+          <span class="brand__tag">C++ &middot; Drogon &middot; SQLite</span>
+        </span>
+      </a>
+      <div class="header-search">
+        <span class="header-search__icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></span>
+        <form method="get" action="/search" style="margin:0;flex:1;max-width:none">
+          <input class="header-search__input" type="search" name="q" placeholder="記事をキーワードで検索" />
+        </form>
+      </div>
+      <nav class="nav">
+        <a class="nav-btn" href="/">記事一覧</a>
+        <a class="nav-btn" href="/login">管理</a>
+        <button class="mode-toggle" data-mode-toggle type="button" aria-label="ライト/ダーク切替"></button>
+      </nav>
+    </div>
+    <div class="gold-rule"></div>
+  </header>
+
+  <!-- ── 記事詳細 ── -->
+  <%c++ auto post = @@.get<service::PostDetail>("post"); %>
+  <%c++ auto comments = @@.get<std::vector<service::CommentItem>>("comments"); %>
+  <main class="page">
+    <div class="progress-bar" style="width:0%"></div>
+    <div class="container">
+      <a class="back-btn" href="/">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M19 12H5m0 0 7 7m-7-7 7-7"/></svg>
+        記事一覧に戻る
+      </a>
+      <div class="layout-with-aside">
+        <aside class="article-aside">
+          <div class="article-aside__title">カテゴリ</div>
+          <ul>
+            <li><a class="aside-link" href="/">すべての記事</a></li>
+            <li><a class="aside-link" href="/">C++</a></li>
+            <li><a class="aside-link" href="/">Drogon</a></li>
+            <li><a class="aside-link" href="/">SQLite</a></li>
+            <li><a class="aside-link" href="/">CMake</a></li>
+            <li><a class="aside-link" href="/">アーキテクチャ</a></li>
+            <li><a class="aside-link" href="/">パフォーマンス</a></li>
+            <li><a class="aside-link" href="/">テスト</a></li>
+          </ul>
+        </aside>
+        <div>
+          <div class="article-hd">
+            <div class="article-cat">記事</div>
+            <h1 class="article-title">{%post.title%}</h1>
+            <div class="article-meta">
+              <span>{%post.createdAt%}</span>
+              <span style="color:var(--c-gold)">—</span>
+              <span class="article-tags"><span class="article-tag-lang">C++</span></span>
+            </div>
+          </div>
+
+          <div class="article-body">
+            <p>{%post.body%}</p>
+          </div>
+
+          <!-- ── コメント（comments テーブル） ── -->
+          <section class="comments">
+            <h2 class="comments__title">コメント <span class="comments__count">{%comments.size()%}</span></h2>
+            <ul class="comment-list">
+              <%c++ if (comments.empty()) { %>
+                <li class="comment"><p class="comment__body">まだコメントはありません。</p></li>
+              <%c++ } else { %>
+                <%c++ for (const auto &c : comments) { %>
+                  <li class="comment">
+                    <div class="comment__head">
+                      <span class="comment__author">{%c.authorName%}</span>
+                      <span class="comment__date">{%c.createdAt%}</span>
+                    </div>
+                    <p class="comment__body">{%c.body%}</p>
+                  </li>
+                <%c++ } %>
+              <%c++ } %>
+            </ul>
+
+            <!-- 投稿先 /posts/{slug}/comments は未実装（CommentController で対応予定） -->
+            <form class="comment-form" method="post" action="/posts/{%post.slug%}/comments">
+              <div class="field-row"><label class="field-label">お名前</label><input class="field-input" name="author_name" type="text" placeholder="ニックネーム" /></div>
+              <div class="field-row"><label class="field-label">コメント</label><textarea class="field-input comment-textarea" name="body" placeholder="コメントを入力…"></textarea></div>
+              <button class="btn-primary" type="submit" style="width:auto;padding:11px 30px">投稿する</button>
+            </form>
+          </section>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ── フッター（全ページ共通） ── -->
+  <footer class="site-footer">
+    <div class="site-footer__inner">
+      <div class="footer-brand">
+        <span class="footer-mark">C</span>
+        <span class="footer-copy">&copy; 2026 C-blog</span>
+      </div>
+      <span class="footer-tech">Powered by <b>Drogon</b> (C++17) &middot; <b>SQLite</b></span>
+    </div>
+  </footer>
+
+  <script src="/js/app.js"></script>
+</body>
+</html>
