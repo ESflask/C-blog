@@ -1,5 +1,6 @@
 <%inc
 #include "services/PostService.h"
+#include "utils/Html.h"
 %>
 <!DOCTYPE html>
 <html lang="ja">
@@ -78,7 +79,7 @@
           </div>
 
           <!-- ── コメント（comments テーブル） ── -->
-          <section class="comments">
+          <section class="comments" id="comments">
             <h2 class="comments__title">コメント <span class="comments__count">{%comments.size()%}</span></h2>
             <ul class="comment-list">
               <%c++ if (comments.empty()) { %>
@@ -87,16 +88,15 @@
                 <%c++ for (const auto &c : comments) { %>
                   <li class="comment">
                     <div class="comment__head">
-                      <span class="comment__author">{%c.authorName%}</span>
+                      <span class="comment__author">{%util::escapeHtml(c.authorName)%}</span>
                       <span class="comment__date">{%c.createdAt%}</span>
                     </div>
-                    <p class="comment__body">{%c.body%}</p>
+                    <p class="comment__body">{%util::escapeHtml(c.body)%}</p>
                   </li>
                 <%c++ } %>
               <%c++ } %>
             </ul>
 
-            <!-- 投稿先 /posts/{slug}/comments は未実装（CommentController で対応予定） -->
             <form class="comment-form" method="post" action="/posts/{%post.slug%}/comments">
               <div class="field-row"><label class="field-label">お名前</label><input class="field-input" name="author_name" type="text" placeholder="ニックネーム" /></div>
               <div class="field-row"><label class="field-label">コメント</label><textarea class="field-input comment-textarea" name="body" placeholder="コメントを入力…"></textarea></div>

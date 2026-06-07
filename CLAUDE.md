@@ -177,6 +177,8 @@ pkill -f 'build/blog_app'
 - [x] `services/AuthService.{h,cc}`（パスワードハッシュ・認証・既定 admin 自動生成）
 - [x] `controllers/BlogController` + `views/index.csp`（`GET /` 記事一覧）
 - [x] `controllers/PostController` + `views/post_detail.csp`（`GET /posts/{slug}` 記事詳細＋コメント表示）
+- [x] `controllers/CommentController`（`POST /posts/{slug}/comments` コメント投稿＋バリデーション＋保存）
+- [x] `utils/Html.h`（`escapeHtml`）＋コメント出力のエスケープ（保存型 XSS 対策）
 - [x] `controllers/AuthController` + `views/login.csp`（`/login`・`/logout`、セッション認証）
 - [x] `controllers/AdminController` + `views/admin.csp` / `post_form.csp`（`/admin/*` ダッシュボード＋記事 CRUD＋公開トグル）
 - [x] `filters/LoginFilter`（`/admin/*` の認証ガード）
@@ -184,8 +186,7 @@ pkill -f 'build/blog_app'
       クライアント側でダーク切替・コードハイライト・読了バーを担当。デザイン原本は `dist/`（参考）。
 
 今後の実装対象:
-- [ ] `{% %}` 出力の HTML エスケープ（title/excerpt 等は現状未エスケープ。XSS 対策）
-- [ ] コメント投稿（現状は表示のみ。POST ルート＋バリデーション＋保存が未実装）
+- [ ] `{% %}` 出力の HTML エスケープ全面化（コメントは対応済。title/excerpt/body 等は未対応）
 - [ ] タグの記事への紐付け UI（`tags`/`post_tags` はテーブルのみ）
 - [ ] 記事本文の Markdown→HTML 変換（`utils/Markdown`）
 - [ ] ORM モデル生成（drogon_ctl。現状 services は生 SQL）

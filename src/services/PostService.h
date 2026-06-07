@@ -57,6 +57,10 @@ public:
     // 指定記事のコメントを古い順で返す。
     static std::vector<CommentItem> listComments(int64_t postId);
 
+    // コメントを追加する。
+    static bool addComment(int64_t postId, const std::string& authorName,
+                           const std::string& body);
+
     // ── 管理用（下書きも対象） ─────────────────────────
     static std::vector<AdminPost> listAll();
     static PostStats stats();

@@ -212,4 +212,18 @@ std::vector<CommentItem> PostService::listComments(int64_t postId) {
     return comments;
 }
 
+bool PostService::addComment(int64_t postId, const std::string& authorName,
+                             const std::string& body) {
+    try {
+        auto dbClient = drogon::app().getDbClient();
+        dbClient->execSqlSync(
+            "INSERT INTO comments(post_id, author_name, body) VALUES(?, ?, ?)",
+            postId, authorName, body);
+        return true;
+    } catch (const std::exception& e) {
+        LOG_ERROR << "PostService::addComment failed: " << e.what();
+        return false;
+    }
+}
+
 } // namespace service
